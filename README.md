@@ -69,3 +69,8 @@ import { Button } from "@workspace/ui/components/button"
 I decided to create this project to **reinvent the wheel** and build this template from scratch using the tools and frameworks I prefer.
 While there are many great examples (such as turborepo-shadcn-ui or superrepo), I wanted to write my shitty code to have a bit of understanding of the architecture, tools, and code involved. 
 This approach ensures that I can fix the code in case any issue appears.
+
+## Other things..
+### flake.nix for prisma
+I am nixos user and for prisma to work, I need prisma engine to be installed. If you have nixos as well, you can write `direnv allow` -> `nix develop`, 
+and then use **prisma** directly like `prisma migrate dev --name init` (without `npx` prefix)
