@@ -1,24 +1,24 @@
-FROM node:14 AS builder
+# Use Node.js 20.11.1 base image
+FROM node:20.11.1-alpine
 
-# Create app directory
+# Set working directory
 WORKDIR /app
 
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# Copy package.json and package-lock.json
 COPY package*.json ./
-COPY prisma ./prisma/
 
-# Install app dependencies
-RUN npm install
+# Install dependencies
+RUN npm cache clean --force
+RUN npm install --legacy-peer-deps
 
+# Copy the rest of the application code
 COPY . .
 
-RUN npm run build
+# Generate Prisma Client code
+RUN npx prisma generate
 
-FROM node:14
+# Expose the port the app runs on, here, I was using port 3333
+EXPOSE 3333
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/dist ./dist
-
-EXPOSE 4000
-CMD [ "npm", "run", "start:prod" ]
+# Command to run the app
+CMD [  "npm", "run", "start:migrate:prod" ]
