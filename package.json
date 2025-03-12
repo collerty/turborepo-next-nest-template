@@ -19,10 +19,13 @@
   },
   "packageManager": "bun@1.2.0",
   "workspaces": [
-  "apps/*",
-  "packages/*"
-],
+    "apps/*",
+    "packages/*"
+  ],
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "commitizen": "^4.3.1"
   }
 }
