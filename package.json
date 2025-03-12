@@ -25,7 +25,4 @@
   "engines": {
     "node": ">=20"
   },
-  "dependencies": {
-    "commitizen": "^4.3.1"
-  }
 }
