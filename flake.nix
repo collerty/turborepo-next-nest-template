@@ -1,5 +1,5 @@
 {
-  description = "A prisma test project";
+  description = "A prisma monorepo project";
 
   # Nixpkgs & flake-utils input references
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
@@ -13,7 +13,8 @@
       devShell = pkgs.mkShell {
         nativeBuildInputs = [
           pkgs.bashInteractive
-          nodePackages.prisma  # Now nodePackages should be available
+          nodePackages.prisma
+          pkgs.prisma-engines
         ];
 
         buildInputs = with pkgs; [
