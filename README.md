@@ -1,17 +1,18 @@
 # **Turborepo + Nixos + Bun + Nestjs + Prisma + Nextjs + Shadcn + Shared Zod Types**
 
-Imagine writing frontend and backend that share the same types. Write the type once - use it everywhere else in your application. 
-That is the main goal of this repository.
-
+- Write schema.prisma once - use generated [Zod Schemas](./packages/zod-schemas/README.md) everywhere else in your application.
+- Use Shadcn components from the /packages/ui directory for a consistent UI.
 ## **Monorepo Structure**
 ```
-/my-monorepo
+/turborepo-next-nest-template
     /apps
         /api (NestJS API)
         /web (Next.js app)
     /packages
         /ui (Shared UI components based on Shadcn)
-        TODO: /utils (Shared utility functions and types)
+        /typescript-config (Shared TS configs)
+        /eslint-config (Shared base eslint.config.mjs)
+        /zod-schemas (Shared Zod schemas)
 turbo.json
 package.json
 ```
@@ -37,13 +38,22 @@ To use the components in your app, import them from the `ui` package.
 ```tsx
 import { Button } from "@workspace/ui/components/button"
 ```
-## Why Create This?
+## Zod schemas
+`bun run build` and/or `bun run dev` automatically run `prisma generate` which re-generates and rebuilds `packages/zod-schemas/` automatically.
 
-I decided to create this project to **reinvent the wheel** and build this template from scratch using the tools and frameworks I prefer.
-While there are many great examples (such as turborepo-shadcn-ui or superrepo), I wanted to write my shitty code to have a bit of understanding of the architecture, tools, and code involved. 
-This approach ensures that I can fix the code in case any issue appears.
+By default, only full models are generated. For more configuration, see [schema.prisma](./apps/api/prisma/schema.prisma).
 
-## Other things..
-### flake.nix for prisma
-I am nixos user and for prisma to work, I need prisma engine to be installed. If you have nixos as well, you can write `direnv allow` -> `nix develop`, 
-and then use **prisma** directly like `prisma migrate dev --name init` (without `npx` prefix)
+## **flake.nix for Prisma**
+
+If you're using NixOS and need the Prisma engine installed, you can use the following commands:
+
+1. `direnv allow`
+2. `nix develop`
+
+Then you can run Prisma commands directly, such as:
+
+```bash
+prisma migrate dev --name init
+```
+> **Note**  
+>You can skip using the `npx` prefix with this setup.
