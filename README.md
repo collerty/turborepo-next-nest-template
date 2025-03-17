@@ -13,8 +13,9 @@
         /typescript-config (Shared TS configs)
         /eslint-config (Shared base eslint.config.mjs)
         /zod-schemas (Shared Zod schemas)
-turbo.json
-package.json
+    flake.nix
+    package.json
+    turbo.json
 ```
 
 ## Adding components
