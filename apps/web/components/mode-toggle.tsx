@@ -11,6 +11,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import { CommentSchema } from '@workspace/zod-schemas';
 
 export function ModeToggle() {
     const { setTheme } = useTheme()
@@ -25,7 +26,7 @@ export function ModeToggle() {
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setTheme("light")}>
+                <DropdownMenuItem onClick={() => console.log(CommentSchema)}>
                     Light
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setTheme("dark")}>

@@ -10,26 +10,29 @@
       pkgs = nixpkgs.legacyPackages.${system};
       nodePackages = pkgs.nodePackages;  # Access nodePackages through pkgs
     in {
-      devShell = pkgs.mkShell {
-        nativeBuildInputs = [
-          pkgs.bashInteractive
-          nodePackages.prisma
-          pkgs.prisma-engines
-        ];
+    devShell = pkgs.mkShell {
+      nativeBuildInputs = [
+        pkgs.bashInteractive
+      ];
 
-        buildInputs = with pkgs; [
-          nodePackages.npm
-          nodejs-slim
-          prisma-engines  # Ensure prisma-engines are available
-        ];
+      buildInputs = with pkgs; [
+        nodejs_18
+        postgresql_16
+        bun
+        nodejs-slim
+        prisma-engines
+      ];
 
-        # Export the Prisma environment variables
-        shellHook = with pkgs; ''
-          export PRISMA_SCHEMA_ENGINE_BINARY="${prisma-engines}/bin/schema-engine"
-          export PRISMA_QUERY_ENGINE_BINARY="${prisma-engines}/bin/query-engine"
-          export PRISMA_QUERY_ENGINE_LIBRARY="${prisma-engines}/lib/libquery_engine.node"
-          export PRISMA_FMT_BINARY="${prisma-engines}/bin/prisma-fmt"
-        '';
-      };
+      # Prisma environment variables (outside shellHook)
+      PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
+      PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
+      PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
+      PRISMA_FMT_BINARY = "${pkgs.prisma-engines}/bin/prisma-fmt";
+
+      shellHook = with pkgs; ''
+        echo "TurboDev version: $(turbo --version)"
+      '';
+    };
+
     });
 }

@@ -1,12 +1,12 @@
 {
-  "name": "shadcn-ui-monorepo",
+  "name": "nextjs-shadcn-nestjs-prisma-zod-monorepo",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "nix develop --command turbo run dev --filter=./apps/web --filter=./apps/api",
-    "dev:web": "nix develop --command turbo dev --filter=./apps/web",
-    "dev:api": "nix develop --command turbo dev --filter=./apps/api",
+    "dev": "turbo run dev --filter=./apps/web --filter=./apps/api",
+    "dev:web": "turbo dev --filter=./apps/web",
+    "dev:api": "turbo dev --filter=./apps/api",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

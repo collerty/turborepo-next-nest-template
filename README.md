@@ -1,34 +1,7 @@
-# **Monorepo template with Next.js, NestJS, Prisma, Shadcn, and Bun**
+# **Turborepo + Nixos + Bun + Nestjs + Prisma + Nextjs + Shadcn + Shared Zod Types**
 
-This project is a **Turborepo** monorepo template with the stack I personally prefer to use.
-## **Why This Stack?**
-
-### **Next.js**:
-- Provides the best-in-class SSR/SSG for building React apps.
-- I like it.
-
-### **Shadcn UI**:
-- A collection of customizable, ready-made UI components built on **Tailwind CSS**.
-- I like it.
-
-### **NestJS**:
-- Enforces a modular, maintainable architecture with **TypeScript**.
-- Forces me to learn more about **OOP**...
-
-**Note:** while Nextjs is itself a fullstack framework, creating a separate backend better suits me.
-### **Prisma**:
-- A modern **ORM** with a focus on **TypeScript** and **developer experience**.
-
-
-### **Bun**:
-- Optimized for package management, which reduces installation times in the monorepo setup. 
-- Has a cute name.
-### **Turborepo**:
-- Helps manage multiple apps and libraries within a single repo.
-- Speeds up builds with caching and parallelization.
-- Allows easy sharing of code (like UI components and utilities) across different applications.
-- Scalable.
----
+Imagine writing frontend and backend that share the same types. Write the type once - use it everywhere else in your application. 
+That is the main goal of this repository.
 
 ## **Monorepo Structure**
 ```
@@ -48,7 +21,7 @@ package.json
 To add components to your app, run the following command at the root of your `web` app:
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+bunx shadcn@latest add button -c apps/web
 ```
 
 This will place the ui components in the `packages/ui/src/components` directory.
