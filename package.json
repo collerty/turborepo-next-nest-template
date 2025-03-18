@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "prisma-generate": "cd apps/api && bun run generate",
+    "build:api": "bun run prisma-generate && turbo build --filter=api",
     "dev": "turbo run dev --filter=./apps/web --filter=./apps/api",
     "dev:web": "turbo dev --filter=./apps/web",
     "dev:api": "turbo dev --filter=./apps/api",
