@@ -43,18 +43,3 @@ import { Button } from "@workspace/ui/components/button"
 `bun run build` and/or `bun run dev` automatically run `prisma generate` which re-generates and rebuilds `packages/zod-schemas/` automatically.
 
 By default, only full models are generated. For more configuration, see [schema.prisma](./apps/api/prisma/schema.prisma).
-
-## **flake.nix for Prisma**
-
-If you're using NixOS and need the Prisma engine installed, you can use the following commands:
-
-1. `direnv allow`
-2. `nix develop`
-
-Then you can run Prisma commands directly, such as:
-
-```bash
-prisma migrate dev --name init
-```
-> **Note**  
->You can skip using the `npx` prefix with this setup.
