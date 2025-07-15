@@ -1,0 +1,22 @@
+# nixpacks.toml located at the root of your turborepo
+
+# [phases] is a top-level table
+[phases]
+
+# Each phase (install, build, start) is also a table nested under [phases]
+[phases.install]
+cmds = ["bun install --frozen-lockfile"]
+
+[phases.build]
+cmds = ["bun run build:api"]
+
+# [start] is a special top-level table in Nixpacks for the runtime command
+# It is NOT nested under [phases]
+[start]
+cmd = "cd apps/api && bun run start:prod"
+
+
+# [variables] table defines environment variables that Nixpacks will use
+[variables]
+NIXPACKS_PKGMGR_CMD = "bun"
+NIXPACKS_APP_DIR = "apps/api"

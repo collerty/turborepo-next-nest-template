@@ -25,16 +25,6 @@
       "dependsOn": [
         "^check-types"
       ]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true,
-      "env": [
-        "PRISMA_SCHEMA_ENGINE_BINARY",
-        "PRISMA_QUERY_ENGINE_BINARY",
-        "PRISMA_QUERY_ENGINE_LIBRARY",
-        "PRISMA_FMT_BINARY"
-      ]
     }
   }
 }
