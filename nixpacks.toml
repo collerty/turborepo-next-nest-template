@@ -13,7 +13,7 @@ cmds = ["bun run build:api"]
 # [start] is a special top-level table in Nixpacks for the runtime command
 # It is NOT nested under [phases]
 [start]
-cmd = "cd apps/api && bun run start:prod"
+cmd = "cd apps/api && bun run migrate && bun run start:prod"
 
 
 # [variables] table defines environment variables that Nixpacks will use

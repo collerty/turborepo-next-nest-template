@@ -30,16 +30,23 @@ datasource db {
 
 model User {
   id       Int       @id @default(autoincrement())
-  email    String    @unique
-  name     String?
+  email    String    @unique @db.VarChar(255)
+  name     String    @db.VarChar(100)
+  password String    @db.VarChar(255)
   comments Comment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Comment {
   id       Int     @id @default(autoincrement())
-  title    String
-  content  String?
+  title    String  @db.VarChar(255)
+  content  String? @db.Text
   author   User?   @relation(fields: [authorId], references: [id])
-  authorId Int?
-  likes    Int?
+  authorId Int
+  likes    Int?  @db.Integer @default(0)
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+
+  @@index([authorId])
 }

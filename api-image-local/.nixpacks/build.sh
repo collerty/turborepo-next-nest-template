@@ -1,1 +1,0 @@
-docker build api-image-local -f api-image-local/.nixpacks/Dockerfile -t a811f913-e03b-4a82-b95c-f970c2af7819 --progress=plain --build-arg CI=true --build-arg NIXPACKS_METADATA=node --build-arg NIXPACKS_PKGMGR_CMD=bun --build-arg NODE_ENV=production --build-arg NPM_CONFIG_PRODUCTION=false
