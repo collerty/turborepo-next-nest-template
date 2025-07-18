@@ -6,10 +6,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtConfigService } from './config/jwt.config';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtConfigService, JwtStrategy],
+  providers: [AuthService, JwtConfigService, JwtStrategy,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard
+    // }
+    ],
   imports: [UsersModule,
     ConfigModule,
     JwtModule.registerAsync({

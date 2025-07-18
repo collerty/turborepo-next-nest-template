@@ -1,3 +1,7 @@
+// This schema uses zod-prisma-types to auto-generate Zod schemas
+// To add custom validators use the example:
+// myField [prisma-scalar-type] /// @zod.[zod-type + optional[(zod-error-messages)]].[zod validators for scalar-type]
+
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["queryCompiler", "driverAdapters"]
@@ -8,16 +12,16 @@ generator zod {
   output                           = "../../../packages/zod-schemas/src/generated"
   useMultipleFiles                 = true // default is false
   writeBarrelFiles                 = true // default is true
-  createInputTypes                 = false // default is true
+  createInputTypes                 = true // default is true
   createModelTypes                 = true // default is true
-  addInputTypeValidation           = false // default is true
+  addInputTypeValidation           = true // default is true
   addIncludeType                   = false // default is true
   addSelectType                    = false // default is true
   validateWhereUniqueInput         = false // default is true
   createOptionalDefaultValuesTypes = false // default is false
   createRelationValuesTypes        = false // default is false
   createPartialTypes               = true // default is false, enable it if you do not always need to write custom update schemas
-  useDefaultValidators             = false // default is true
+  useDefaultValidators             = true // default is true
   coerceDate                       = true // default is true
   writeNullishInModelTypes         = false // default is false
   postgenerate                     = "echo 'post generate'" // rebuild the package after generating models
@@ -29,24 +33,29 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique @db.VarChar(255)
-  name     String    @db.VarChar(100)
-  password String    @db.VarChar(255)
-  comments Comment[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id        Int       @id @default(autoincrement())
+  /// @zod.custom.use(z.string().email())
+  email     String    @unique @db.VarChar(255)
+  /// @zod.string.min(2, { message: "Name must contain at least 2 characters" }).max(100, { message: "Name can't exceed 100 characters" })
+  name      String    @db.VarChar(100)
+  /// @zod.string.min(8, { message: "Password must contain at least 8 characters" }).max(32, { message: "Password can't exceed 32 characters" })
+  password  String    @db.VarChar(255)
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Comment {
-  id       Int     @id @default(autoincrement())
-  title    String  @db.VarChar(255)
-  content  String? @db.Text
-  author   User?   @relation(fields: [authorId], references: [id])
-  authorId Int
-  likes    Int?  @db.Integer @default(0)
+  id        Int      @id @default(autoincrement())
+  /// @zod.string.min(2, { message: "Title must contain at least 2 characters" }).max(255, { message: "Title can't exceed 255 characters" })
+  title     String   @db.VarChar(255)
+  /// @zod.string.min(2, { message: "Content must contain at least 2 characters" }).max(2000, { message: "Content can't exceed 2000 characters" })
+  content   String   @db.VarChar(2000)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  likes     Int?     @default(0) @db.Integer
   createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  updateAt  DateTime @updatedAt
 
   @@index([authorId])
 }

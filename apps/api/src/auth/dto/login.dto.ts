@@ -1,11 +1,12 @@
-import { IsEmail, IsString, Length } from 'class-validator';
+import { createZodDto } from 'nestjs-zod';
+import { UserSchema } from '@workspace/zod-schemas';
+import { z } from 'zod';
 
-export class LoginDto {
-  @IsEmail()
-  @Length(2, 255)
-  email: string;
+export const UserSchemaDTO = z
+  .object({
+    ...UserSchema.shape,
+  })
+  .omit({ id: true, name: true, createdAt: true, updatedAt: true });
 
-  @IsString()
-  @Length(2, 64)
-  password: string;
+export class LoginDto extends createZodDto(UserSchemaDTO) {
 }

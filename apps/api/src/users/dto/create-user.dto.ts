@@ -1,12 +1,5 @@
 import { createZodDto } from 'nestjs-zod';
-import { UserSchema } from '@workspace/zod-schemas';
-import { z } from 'zod';
+import { UserCreateInputSchema } from '@workspace/zod-schemas';
 
-export const UserSchemaDTO = z
-  .object({
-    ...UserSchema.shape,
-  })
-  .omit({ id: true });
-
-export class CreateUserDto extends createZodDto(UserSchemaDTO) {
+export class CreateUserDto extends createZodDto(UserCreateInputSchema) {
 }
