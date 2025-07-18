@@ -21,10 +21,8 @@ export class CommentsController {
   }
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto, @Req() req: Request) {
-    console.log('DEBUG: req.body', req.body); // this will show raw submitted data
-    console.log('DEBUG: dto as object', JSON.stringify(createCommentDto)); // may still be empty
-    console.log('DEBUG: instance keys', Object.keys(createCommentDto));
+  create(@Body() createCommentDto: CreateCommentDto, @Req() req: any) {
+    console.log('DEBUG:', req.user);
     return this.commentsService.create(createCommentDto);
   }
 
@@ -34,11 +32,11 @@ export class CommentsController {
     return this.commentsService.findAll();
   }
 
-  //
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.commentsService.findOne(+id);
-  // }
+  @Public()
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.commentsService.findOne(+id);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {

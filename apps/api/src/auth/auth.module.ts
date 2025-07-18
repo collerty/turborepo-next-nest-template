@@ -12,10 +12,10 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Module({
   controllers: [AuthController],
   providers: [AuthService, JwtConfigService, JwtStrategy,
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard
-    // }
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    }
     ],
   imports: [UsersModule,
     ConfigModule,

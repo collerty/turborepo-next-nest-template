@@ -12,7 +12,6 @@ export class AuthController {
   @Public()
   @Post('register')
   register(@Body() registerDto: RegisterDto) {
-    console.log('DEBUG:', registerDto);
     return this.authService.register(registerDto);
   }
 

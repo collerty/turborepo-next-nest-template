@@ -11,16 +11,9 @@ async function bootstrap() {
 
   app.use(express.json());
 
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     whitelist: true,
-  //     forbidNonWhitelisted: true,
-  //     transform: true,
-  //   }),
-  // );
-
-  const { httpAdapter } = app.get(HttpAdapterHost);
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
+  // uncomment to send raw PrismaClient errors in the response
+  // const { httpAdapter } = app.get(HttpAdapterHost);
+  // app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter));
 
   const configService = app.get(ConfigService);
 
