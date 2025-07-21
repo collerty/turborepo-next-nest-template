@@ -1,12 +1,17 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { Public } from './public.decorator';
+import { GoogleOauthGuard } from './guards/google-oauth.guard';
+import { GithubOauthGuard } from './guards/github-oauth.guard';
+import { ConfigService } from '@nestjs/config';
+import { ProviderType } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {
+  constructor(private readonly authService: AuthService,
+              private configService: ConfigService) {
   }
 
   @Public()
@@ -19,5 +24,66 @@ export class AuthController {
   @Post('login')
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
+  }
+
+  @Post('logout')
+  logOut(@Req() req: any, @Res() res: any) {
+    console.log('log out');
+    return this.authService.logout(req, res);
+  }
+
+  @Get('profile')
+  getProfile(@Req() req: any) {
+    console.log('requested profile');
+    const { password, ...user } = req.user;
+    return user;
+  }
+
+  @Public()
+  @Post('refresh')
+  async refreshToken(@Body('refreshToken') refreshToken: string, @Res({ passthrough: true }) res: any) {
+    const newTokens = await this.authService.refreshTokens(refreshToken, res);
+    return newTokens;
+  }
+
+  @Public()
+  @UseGuards(GoogleOauthGuard)
+  @Get('google')
+  googleAuth() {
+  }
+
+  @Public()
+  @UseGuards(GoogleOauthGuard)
+  @Get('google/callback')
+  async googleAuthRedirect(@Req() req: any, @Res({ passthrough: true }) res: any) {
+    await this.authService.socialLogin(req.user, ProviderType.GOOGLE, res);
+
+    const redirectUrl = this.configService.get<string>(
+      'NEXT_URL_PRODUCTION',
+      'http://localhost:3000', // fallback to localhost if not set
+    );
+
+
+    return res.redirect(redirectUrl);
+  }
+
+  @Public()
+  @UseGuards(GithubOauthGuard)
+  @Get('github')
+  githubAuth() {
+  }
+
+  @Public()
+  @UseGuards(GithubOauthGuard)
+  @Get('github/callback')
+  async githubAuthRedirect(@Req() req: any, @Res() res: any) {
+    await this.authService.socialLogin(req.user, ProviderType.GITHUB, res);
+
+    const redirectUrl = this.configService.get<string>(
+      'NEXT_URL_PRODUCTION',
+      'http://localhost:3000', // fallback to localhost if not set
+    );
+
+    return res.redirect(redirectUrl);
   }
 }

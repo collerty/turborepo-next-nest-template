@@ -24,7 +24,6 @@ generator zod {
   useDefaultValidators             = true // default is true
   coerceDate                       = true // default is true
   writeNullishInModelTypes         = false // default is false
-  postgenerate                     = "echo 'post generate'" // rebuild the package after generating models
 }
 
 datasource db {
@@ -35,14 +34,26 @@ datasource db {
 model User {
   id        Int       @id @default(autoincrement())
   /// @zod.custom.use(z.string().email())
-  email     String    @unique @db.VarChar(255)
+  email     String    @db.VarChar(255)
   /// @zod.string.min(2, { message: "Name must contain at least 2 characters" }).max(100, { message: "Name can't exceed 100 characters" })
-  name      String    @db.VarChar(100)
+  name      String?    @db.VarChar(100) // ask name after social login
   /// @zod.string.min(8, { message: "Password must contain at least 8 characters" }).max(32, { message: "Password can't exceed 32 characters" })
-  password  String    @db.VarChar(255)
+  password  String?    @db.VarChar(255)
   comments  Comment[]
+  socialTokens SocialTokens?
+  refreshToken String? @db.VarChar(1000)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model SocialTokens {
+  providerUserId String @unique
+  providerType ProviderType
+  user User @relation(fields: [userId], references: [id])
+  userId Int @unique
+
+  @@id([providerUserId, providerType])
+  @@index([userId])
 }
 
 model Comment {
@@ -58,4 +69,10 @@ model Comment {
   updateAt  DateTime @updatedAt
 
   @@index([authorId])
+}
+
+enum ProviderType {
+  CREDENTIALS
+  GOOGLE
+  GITHUB
 }
