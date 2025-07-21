@@ -41,7 +41,7 @@ export class AuthService {
     const payload: Payload = { sub: user.id };
     const tokens = this.signTokens(payload);
 
-    // TODO update refreshToken
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
     // TODO send cookies
 
     return tokens;
@@ -67,8 +67,7 @@ export class AuthService {
     const payload: Payload = { sub: user.id };
     const tokens = this.signTokens(payload);
 
-
-    // TODO update refreshToken
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
     // TODO send cookies
 
     return tokens;
@@ -77,7 +76,9 @@ export class AuthService {
   async socialLogin(user: User, provider: ProviderType, res: any) {
     const payload: Payload = { sub: user.id };
     const tokens = this.signTokens(payload);
-    // TODO update refresh tokens in db
+
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+
     // TODO send tokens with cookies
     console.log(provider);
     console.log(tokens);
@@ -133,10 +134,10 @@ export class AuthService {
     }
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string) {
+  updateRefreshToken(userId: number, refreshToken: string) {
     // const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     console.log('update refresh token', refreshToken);
-    return await this.usersService.update(userId, { refreshToken: refreshToken });
+    return this.usersService.update(userId, { refreshToken: refreshToken });
   }
 
   async validateGoogleUser(profile: GoogleProfile): Promise<any> {
