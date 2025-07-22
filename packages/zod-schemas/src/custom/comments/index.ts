@@ -1,1 +1,1 @@
-export { CommentCreateSchema } from './commentCreateSchema';
+export * from './commentCreateSchema';

@@ -7,3 +7,5 @@ export const CommentCreateSchema = CommentSchema.extend({}).omit({
   createdAt: true,
   updateAt: true
 });
+
+export const CommentUpdateSchema = CommentCreateSchema.partial();
