@@ -8,8 +8,13 @@ export class CommentsService {
   constructor(private prisma: PrismaService) {
   }
 
-  create(createCommentDto: CreateCommentDto) {
-    return this.prisma.comment.create({ data: createCommentDto });
+  create(createCommentDto: CreateCommentDto, authorId: number) {
+    return this.prisma.comment.create({
+      data: {
+        ...createCommentDto,
+        authorId: authorId,
+      },
+    });
   }
 
   findAll() {

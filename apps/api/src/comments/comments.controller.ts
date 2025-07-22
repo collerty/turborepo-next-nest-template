@@ -14,16 +14,18 @@ import { CommentSchema } from '@workspace/zod-schemas';
 import { createZodDto } from 'nestjs-zod';
 import { Public } from '../auth/public.decorator';
 import { plainToInstance } from 'class-transformer';
+import { ReqWithUser } from '../auth/req-with-user';
 
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {
   }
 
+  // @Public()
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto, @Req() req: any) {
-    console.log('DEBUG:', req.user);
-    return this.commentsService.create(createCommentDto);
+  create(@Body() createCommentDto: CreateCommentDto, @Req() req: ReqWithUser) {
+    console.log(CreateCommentDto)
+    return this.commentsService.create(createCommentDto, req.user.id);
   }
 
   @Public()

@@ -7,6 +7,8 @@ import { GoogleOauthGuard } from './guards/google-oauth.guard';
 import { GithubOauthGuard } from './guards/github-oauth.guard';
 import { ConfigService } from '@nestjs/config';
 import { ProviderType } from '@prisma/client';
+import { ReqWithUser } from './req-with-user';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -16,24 +18,24 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  register(@Body() registerDto: RegisterDto) {
-    return this.authService.register(registerDto);
+  register(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.register(registerDto, res);
   }
 
   @Public()
   @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  login(@Body() loginDto: LoginDto, @Res({ passthrough: true }) res: Response) {
+    return this.authService.login(loginDto, res);
   }
 
   @Post('logout')
-  logOut(@Req() req: any, @Res() res: any) {
+  logOut(@Req() req: ReqWithUser, @Res() res: Response) {
     console.log('log out');
     return this.authService.logout(req, res);
   }
 
   @Get('profile')
-  getProfile(@Req() req: any) {
+  getProfile(@Req() req: ReqWithUser) {
     console.log('requested profile');
     const { password, ...user } = req.user;
     return user;
@@ -41,7 +43,7 @@ export class AuthController {
 
   @Public()
   @Post('refresh')
-  async refreshToken(@Body('refreshToken') refreshToken: string, @Res({ passthrough: true }) res: any) {
+  async refreshToken(@Body('refreshToken') refreshToken: string, @Res({ passthrough: true }) res: Response) {
     const newTokens = await this.authService.refreshTokens(refreshToken, res);
     return newTokens;
   }
@@ -55,7 +57,7 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleOauthGuard)
   @Get('google/callback')
-  async googleAuthRedirect(@Req() req: any, @Res({ passthrough: true }) res: any) {
+  async googleAuthRedirect(@Req() req: ReqWithUser, @Res({ passthrough: true }) res: Response) {
     await this.authService.socialLogin(req.user, ProviderType.GOOGLE, res);
 
     const redirectUrl = this.configService.get<string>(
@@ -76,7 +78,7 @@ export class AuthController {
   @Public()
   @UseGuards(GithubOauthGuard)
   @Get('github/callback')
-  async githubAuthRedirect(@Req() req: any, @Res() res: any) {
+  async githubAuthRedirect(@Req() req: ReqWithUser, @Res() res: Response) {
     await this.authService.socialLogin(req.user, ProviderType.GITHUB, res);
 
     const redirectUrl = this.configService.get<string>(

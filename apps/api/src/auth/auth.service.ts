@@ -11,26 +11,25 @@ import { UsersService } from '../users/users.service';
 import { Prisma, ProviderType, SocialTokens, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { Tokens } from '@workspace/zod-schemas/src/custom/tokens';
+import { Tokens } from '@workspace/zod-schemas';
 import { Profile as GoogleProfile } from 'passport-google-oauth20';
 import { Profile as GithubProfile } from 'passport-github2';
 import { Payload } from '@workspace/zod-schemas';
+import { ConfigService } from '@nestjs/config';
+import { ReqWithUser } from './req-with-user';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private usersService: UsersService,
-              private jwtService: JwtService,
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
   ) {
   }
 
-  // 1) set up users service - DONE
-  // 2) do simple login / register - create a user basically - TODO
-  // 3) set up JWT, hashing
-  // 4) set up refresh token
-  // 5) do social auth ( google + github )
-
-  async register(registerDTO: RegisterDto): Promise<Tokens> {
+  async register(registerDTO: RegisterDto, res: Response): Promise<Tokens> {
     const { email, name, password } = registerDTO;
     const hashedPassword = await bcrypt.hash(password, 10);
     const existingUser = await this.usersService.findCredentialsUserByEmail(email);
@@ -42,12 +41,13 @@ export class AuthService {
     const tokens = this.signTokens(payload);
 
     await this.updateRefreshToken(user.id, tokens.refreshToken);
-    // TODO send cookies
+
+    this.sendHttpOnlyCookies(res, tokens);
 
     return tokens;
   }
 
-  async login(loginDto: LoginDto): Promise<Tokens> {
+  async login(loginDto: LoginDto, res: Response): Promise<Tokens> {
     const { email, password } = loginDto;
 
     const user: User | null = await this.usersService.findCredentialsUserByEmail(email);
@@ -68,28 +68,31 @@ export class AuthService {
     const tokens = this.signTokens(payload);
 
     await this.updateRefreshToken(user.id, tokens.refreshToken);
-    // TODO send cookies
+
+    this.sendHttpOnlyCookies(res, tokens);
 
     return tokens;
   }
 
-  async socialLogin(user: User, provider: ProviderType, res: any) {
+  async socialLogin(user: User, provider: ProviderType, res: Response) {
     const payload: Payload = { sub: user.id };
     const tokens = this.signTokens(payload);
 
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
-    // TODO send tokens with cookies
+    this.sendHttpOnlyCookies(res, tokens);
     console.log(provider);
     console.log(tokens);
     return tokens;
   }
 
-  async logout(req: any, res: any) {
-    //   TODO clear cookies
+  async logout(req: ReqWithUser, res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    return res.status(200).json({ message: 'Logged out successfully' });
   }
 
-  async refreshTokens(refreshToken: string, res: any) {
+  async refreshTokens(refreshToken: string, res: Response) {
     try {
       const payload: Payload = this.jwtService.verify(refreshToken);
 
@@ -110,24 +113,10 @@ export class AuthService {
 
       const newTokens = this.signTokens(newPayload);
 
-      console.log('Refresh generated refreshToken:', newTokens.refreshToken);
       await this.updateRefreshToken(user.id, newTokens.refreshToken);
 
-      // res.cookie('accessToken', newAccessToken, {
-      //   httpOnly: true,
-      //   secure: true,
-      //   sameSite: 'None',
-      //   domain: this.configService.get<string>('COOKIE_DOMAIN'),
-      //   maxAge: 60 * 60 * 1000, // 1 hour
-      // });
-      //
-      // res.cookie('refreshToken', newRefreshToken, {
-      //   httpOnly: true,
-      //   secure: true,
-      //   sameSite: 'None',
-      //   domain: this.configService.get<string>('COOKIE_DOMAIN'),
-      //   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      // });
+      this.sendHttpOnlyCookies(res, newTokens);
+
       return newTokens;
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
@@ -155,5 +144,25 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  sendHttpOnlyCookies(res: Response, tokens: Tokens): void {
+    res.cookie('accessToken', tokens.accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
+      maxAge: 60 * 60 * 1000, // 1 hour
+      signed: true
+    });
+
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      domain: this.configService.get<string>('COOKIE_DOMAIN'),
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      signed: true
+    });
   }
 }

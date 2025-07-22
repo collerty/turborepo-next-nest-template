@@ -4,6 +4,19 @@ import { Strategy, ExtractJwt } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../../users/users.service';
 import { Payload } from '@workspace/zod-schemas';
+import fromExtractors = ExtractJwt.fromExtractors;
+import fromAuthHeaderAsBearerToken = ExtractJwt.fromAuthHeaderAsBearerToken;
+import { ReqWithUser } from '../req-with-user';
+
+function cookieExtractor(req: ReqWithUser) {
+  var token = null;
+  if (req && req.cookies)
+  {
+    token = req.signedCookies["accessToken"];
+  }
+  return token;
+};
+
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -16,12 +29,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new Error('JWT_SECRET is not defined in environment variables');
     }
 
+
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: fromExtractors([cookieExtractor, fromAuthHeaderAsBearerToken()]),
       ignoreExpiration: false,
       secretOrKey: jwtSecret,
     });
   }
+
+
 
   async validate(payload: Payload) {
     const id: number = payload.sub;
