@@ -1,4 +1,4 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateCommentDto } from './create-comment.dto';
+import { createZodDto } from 'nestjs-zod';
+import { CommentUpdateSchema } from '@workspace/zod-schemas';
 
-export class UpdateCommentDto extends PartialType(CreateCommentDto) {}
+export class UpdateCommentDto extends createZodDto(CommentUpdateSchema) {}

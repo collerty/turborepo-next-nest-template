@@ -10,8 +10,10 @@ export class UsersController {
 
   @Patch()
   updateMe(@Req() req: ReqWithUser, @Body() updateUserDto: UpdateUserDto) {
+    console.log(UpdateUserDto)
     return this.usersService.update(req.user.id, updateUserDto);
   }
+
   // TODO implementa RBAC
   // @Post()
   // create(@Body() createUserDto: CreateUserDto) {
