@@ -8,7 +8,7 @@ import { ReqWithUser } from '../auth/req-with-user';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Patch(':id')
+  @Patch()
   updateMe(@Req() req: ReqWithUser, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(req.user.id, updateUserDto);
   }
