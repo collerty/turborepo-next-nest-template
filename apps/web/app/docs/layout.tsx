@@ -1,11 +1,12 @@
-export default function DocsLayout({
-                                     children,
-                                   }: { children: React.ReactNode }) {
+import { source } from '@/lib/source';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import type { ReactNode } from 'react';
+import { baseOptions } from '@/layout.config';
+
+export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="container-wrapper flex flex-1 flex-col px-2">
-      <div className="h-full w-full">
-        {children}
-      </div>
-    </div>
+    <DocsLayout tree={source.pageTree} {...baseOptions}>
+      {children}
+    </DocsLayout>
   );
 }
