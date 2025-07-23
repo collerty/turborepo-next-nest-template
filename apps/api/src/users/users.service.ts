@@ -6,6 +6,7 @@ import { RegisterDto } from '../auth/dto/register.dto';
 import { ProviderType, SocialTokens, User } from '@prisma/client';
 import { Profile as GithubProfile } from 'passport-github2';
 import { Profile as GoogleProfile } from 'passport-google-oauth20';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,15 @@ export class UsersService {
   }
 
   create(createUserDto: RegisterDto | CreateUserDto) {
-    return this.prisma.user.create({ data: createUserDto });
+    const { email, name, password } = createUserDto;
+    return this.prisma.user.create({
+      data:
+        {
+          email,
+          name,
+          password,
+        },
+    });
   }
 
   findAll() {
@@ -63,7 +72,7 @@ export class UsersService {
         case ProviderType.GOOGLE:
           return this.createGoogleUser(profile as GoogleProfile);
         default:
-          throw new Error('Unsupported provider')
+          throw new Error('Unsupported provider');
       }
     }
 
@@ -111,7 +120,10 @@ export class UsersService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
     return this.prisma.user.update({
       where: { id },
       data: { ...updateUserDto },

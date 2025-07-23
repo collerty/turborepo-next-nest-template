@@ -1,10 +1,14 @@
-import { ModeToggle } from '@/components/header/mode-toggle';
+import { ModeToggle, ModeToggleInstant } from '@/components/header/mode-toggle';
 import { NavHeader } from '@/components/header/nav-header';
 import { Button } from '@workspace/ui/components/button';
 import Link from 'next/link';
 import { siteConfig } from '@/lib/config';
 import { Icons } from '@workspace/ui/components/icons';
 import { MainNav } from '@/components/header/main-nav';
+import { GithubLink } from '@/components/header/github-link';
+import { SeparatorVertical } from 'lucide-react';
+import { Separator } from '@workspace/ui/components/separator';
+import { SiteConfig } from '@/components/header/site-config';
 
 export function SiteHeader() {
   return (
@@ -30,6 +34,17 @@ export function SiteHeader() {
             </Link>
           </Button>
           <MainNav items={siteConfig.navItems} className="hidden lg:flex" />
+          <div className="ml-auto flex items-center md:flex-1 md:justify-end gap-2">
+            {/*<div>*/}
+            {/*  <CommandMenu/>*/}
+            {/*</div>*/}
+            <GithubLink/>
+            <Separator orientation="vertical" className="3xl:flex hidden" />
+            <SiteConfig className="3xl:flex hidden"/>
+            <Separator orientation="vertical" />
+            <ModeToggleInstant />
+
+          </div>
         </div>
       </div>
     </header>

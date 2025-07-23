@@ -1,6 +1,11 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  transpilePackages: ["@workspace/ui"],
-}
+import { createMDX } from 'fumadocs-mdx/next';
 
-export default nextConfig
+const withMDX = createMDX();
+
+/** @type {import('next').NextConfig} */
+const config = {
+  reactStrictMode: true,
+  transpilePackages: ['@workspace/ui'],
+};
+
+export default withMDX(config);

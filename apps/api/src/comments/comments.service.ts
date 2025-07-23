@@ -9,10 +9,16 @@ export class CommentsService {
   }
 
   create(createCommentDto: CreateCommentDto, authorId: number) {
+    const { title, content } = createCommentDto;
     return this.prisma.comment.create({
       data: {
-        ...createCommentDto,
-        authorId: authorId,
+        title,
+        content,
+        author: {
+          connect: {
+            id: authorId,
+          },
+        },
       },
     });
   }
