@@ -20,11 +20,11 @@ export function SiteHeader() {
         <div className="3xl:fixed:container flex h-(--header-height) items-center gap-2 **:data-[slot=separator]:!h-4">
           {/*<NavHeader />*/}
           {/*<ModeToggle />*/}
-          {/*<MobileNav*/}
-          {/*  tree={pageTree}*/}
-          {/*  items={siteConfig.navItems}*/}
-          {/*  className="flex lg:hidden"*/}
-          {/*  />*/}
+          <MobileNav
+            tree={pageTree}
+            items={siteConfig.navItems}
+            className="flex lg:hidden"
+            />
           <Button
             asChild
             variant="ghost"
