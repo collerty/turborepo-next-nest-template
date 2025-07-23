@@ -8,6 +8,7 @@ import { fontVariables } from '@workspace/ui/lib/fonts';
 import { Toaster } from '@workspace/ui/components/sonner';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
 import { LayoutProvider } from '@/hooks/use-layout';
+import { RootProvider } from 'fumadocs-ui/provider';
 
 const fontSans = Geist({
   subsets: ['latin'],
@@ -32,14 +33,16 @@ export default function RootLayout({
         fontVariables,
       )}
     >
-    <ThemeProvider>
-      <LayoutProvider>
-        <SiteHeader />
-        {children}
-        <TailwindIndicator />
-        <Toaster position="top-center" />
-      </LayoutProvider>
-    </ThemeProvider>
+    <RootProvider>
+      <ThemeProvider>
+        <LayoutProvider>
+          <SiteHeader />
+          {children}
+          <TailwindIndicator />
+          <Toaster position="top-center" />
+        </LayoutProvider>
+      </ThemeProvider>
+    </RootProvider>
     </body>
     </html>
   );
