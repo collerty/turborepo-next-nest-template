@@ -36,7 +36,7 @@ export default function RootLayout({
     <RootProvider>
       <ThemeProvider>
         <LayoutProvider>
-          <SiteHeader />
+          {/*<SiteHeader />*/}
           {children}
           <TailwindIndicator />
           <Toaster position="top-center" />
