@@ -4,7 +4,7 @@ import {
   DocsDescription,
   DocsPage,
   DocsTitle,
-} from '@/components/layouts/page';
+} from '@/components/docs/page';
 import { notFound } from 'next/navigation';
 import { getMDXComponents } from '@/mdx-components';
 

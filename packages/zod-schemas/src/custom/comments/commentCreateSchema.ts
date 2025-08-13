@@ -5,7 +5,7 @@ export const CommentCreateSchema = CommentSchema.extend({}).omit({
   authorId: true, // taken from user.id sending the request
   likes: true,
   createdAt: true,
-  updateAt: true
+  updatedAt: true
 });
 
 export const CommentUpdateSchema = CommentCreateSchema.partial();

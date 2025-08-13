@@ -6,6 +6,8 @@ export const siteConfig = {
     'Fullstack Turborepo Nextjs Nestjs template using Zod types.',
   links: {
     github: 'https://github.com/collerty/turborepo-next-nest-template',
+    shadcn: 'https://ui.shadcn.com',
+    fumadocs: 'https://fumadocs.dev/'
   },
   navItems: [
     {

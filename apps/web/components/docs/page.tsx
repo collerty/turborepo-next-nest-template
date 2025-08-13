@@ -9,6 +9,7 @@ import { AnchorProvider, useActiveAnchors } from 'fumadocs-core/toc';
 import { cn } from '../../lib/cn';
 import { useTreeContext } from 'fumadocs-ui/contexts/tree';
 import { Link, usePathname } from 'fumadocs-core/framework';
+import { DocsTableOfContents } from '@/components/docs/docs-toc';
 
 export interface DocsPageProps {
   toc?: TableOfContents;
@@ -30,8 +31,8 @@ export function DocsPage({ toc = [], ...props }: DocsPageProps) {
             <div className="flex flex-col gap-2">
               {/*<div className="flex flex-col gap-2">*/}
               {/*  /!*<div className="flex items-start justify-between">*!/*/}
-                  {props.children}
-                  <Footer />
+              {props.children}
+              <Footer />
               {/*  </div>*/}
               {/*</div>*/}
             </div>
@@ -41,18 +42,16 @@ export function DocsPage({ toc = [], ...props }: DocsPageProps) {
           <div
             className="sticky top-[calc(var(--header-height)+1px)] z-30 ml-auto hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-72 flex-col gap-4 overflow-hidden overscroll-none pb-8 xl:flex">
             <div className="h-(--top-spacing) shrink-0" />
-
-            <p className="text-sm text-fd-muted-foreground mb-2">On this page</p>
-            <div className="flex flex-col">
-              {toc.map((item) => (
-                <TocItem key={item.url} item={item} />
-              ))}
+            <div className="no-scrollbar overflow-y-auto px-8">
+              <DocsTableOfContents toc={toc} />
+              <div className="h-12" />
             </div>
           </div>
         )}
       </div>
     </AnchorProvider>
-  );
+  )
+    ;
 }
 
 export function DocsBody(props: ComponentProps<'div'>) {
@@ -82,25 +81,6 @@ export function DocsTitle(props: ComponentProps<'h1'>) {
     <h1 {...props} className={cn('text-3xl font-semibold', props.className)}>
       {props.children}
     </h1>
-  );
-}
-
-function TocItem({ item }: { item: TOCItemType }) {
-  const isActive = useActiveAnchors().includes(item.url.slice(1));
-
-  return (
-    <a
-      href={item.url}
-      className={cn(
-        'text-sm text-fd-foreground/80 py-1',
-        isActive && 'text-fd-primary',
-      )}
-      style={{
-        paddingLeft: Math.max(0, item.depth - 2) * 16,
-      }}
-    >
-      {item.title}
-    </a>
   );
 }
 
