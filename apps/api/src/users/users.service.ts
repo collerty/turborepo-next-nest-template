@@ -55,7 +55,11 @@ export class UsersService {
     return null;
   }
 
-  async findOrCreateUser(profile: GithubProfile | GoogleProfile, provider: ProviderType): Promise<SocialTokens | User> {
+  isEmptyObject(obj: object | null | undefined): boolean {
+    return !obj || Object.keys(obj).length === 0
+  }
+
+  async findOrCreateUser(profile: GithubProfile | GoogleProfile, provider: ProviderType): Promise<User> {
     console.log('find or create user');
     console.log(profile);
     console.log('DEBUG:', provider);
@@ -65,7 +69,8 @@ export class UsersService {
     }
     const socialTokens = await this.findOneByProvider(profile.id, provider);
     console.log(socialTokens);
-    if (!socialTokens) {
+    console.log(this.isEmptyObject(socialTokens));
+    if (this.isEmptyObject(socialTokens)) {
       switch (provider) {
         case ProviderType.GITHUB:
           return this.createGithubUser(profile as GithubProfile);
@@ -76,7 +81,12 @@ export class UsersService {
       }
     }
 
-    return socialTokens;
+    const user = await this.findOne(socialTokens!.userId);
+    console.log("User added to the req", user)
+    if (!user ) {
+      throw new Error('User could not be added to req');
+    }
+    return user;
   }
 
   findOneByProvider(providerUserId: string, provider: ProviderType) {

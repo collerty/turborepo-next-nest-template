@@ -3,6 +3,8 @@
   "pages": [
     "index",
     "introduction",
-    "prisma-cli"
+    "prisma-cli",
+    "shadcn-ui",
+    "auth"
   ]
 }

@@ -14,7 +14,7 @@ With Bun, use `bunx` to run Prisma CLI.
 
 After updating `schema.prisma`:
 
-```bash
+```bash title="Terminal  | (root)/apps/api"
 bunx prisma migrate dev --name <name>
 ```
 
@@ -25,7 +25,7 @@ bunx prisma migrate dev --name <name>
 
 ## Deploy migrations (prod)
 
-```bash
+```bash title="Terminal  | (root)/apps/api"
 bunx prisma migrate deploy
 ```
 
@@ -33,7 +33,7 @@ bunx prisma migrate deploy
 
 This is what your `migrate` script does:
 
-```json
+```json title="(root)/apps/api/package.json"
 "migrate": "bunx prisma migrate deploy"
 ```
 
@@ -41,7 +41,7 @@ This is what your `migrate` script does:
 
 ## Push schema without migration
 
-```bash
+```bash title="Terminal  | (root)/apps/api"
 bunx prisma db push
 ```
 
@@ -53,7 +53,7 @@ bunx prisma db push
 
 ## Reset the database
 
-```bash
+```bash title="Terminal  | (root)/apps/api"
 bunx prisma migrate reset
 ```
 
@@ -65,7 +65,7 @@ bunx prisma migrate reset
 
 ## Generate Prisma Client
 
-```bash
+```bash title="Terminal  | (root)/apps/api"
 bunx prisma generate
 ```
 
@@ -89,7 +89,7 @@ Each contains:
 
 ## Typical workflow
 
-```bash
+```bash title="Terminal  | (root)/apps/api"
 # Edit schema
 # Create migration
 bunx prisma migrate dev --name <name>

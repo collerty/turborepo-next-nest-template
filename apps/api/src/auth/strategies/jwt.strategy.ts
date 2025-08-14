@@ -10,9 +10,15 @@ import { ReqWithUser } from '../req-with-user';
 
 function cookieExtractor(req: ReqWithUser) {
   var token = null;
+
+  const signed = req?.signedCookies?.['accessToken'];
+  const raw = req?.cookies?.['accessToken'];
+  console.log('signed cookie:', signed);
+  console.log(JSON.stringify(raw));
   if (req && req.cookies)
   {
     token = req.signedCookies["accessToken"];
+
   }
   return token;
 };

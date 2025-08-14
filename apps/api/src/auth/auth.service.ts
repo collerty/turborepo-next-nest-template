@@ -78,6 +78,7 @@ export class AuthService {
     const payload: Payload = { sub: user.id };
     const tokens = this.signTokens(payload);
 
+    console.log('DEBUG socLogUser:', user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     this.sendHttpOnlyCookies(res, tokens);
@@ -126,6 +127,7 @@ export class AuthService {
   updateRefreshToken(userId: number, refreshToken: string) {
     // const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     console.log('update refresh token', refreshToken);
+    console.log("DEBUG refresh token: ", userId)
     return this.usersService.update(userId, { refreshToken: refreshToken });
   }
 

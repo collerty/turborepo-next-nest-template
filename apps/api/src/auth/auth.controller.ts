@@ -78,7 +78,8 @@ export class AuthController {
   @Public()
   @UseGuards(GithubOauthGuard)
   @Get('github/callback')
-  async githubAuthRedirect(@Req() req: ReqWithUser, @Res() res: Response) {
+  async githubAuthRedirect(@Req() req: ReqWithUser, @Res({ passthrough: true }) res: Response) {
+    console.log('DEBUG githubRedirect:', req.user);
     await this.authService.socialLogin(req.user, ProviderType.GITHUB, res);
 
     const redirectUrl = this.configService.get<string>(

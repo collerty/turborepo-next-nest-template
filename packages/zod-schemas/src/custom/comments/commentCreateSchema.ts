@@ -1,4 +1,5 @@
 import { CommentSchema } from '../../generated';
+import { z } from 'zod';
 
 export const CommentCreateSchema = CommentSchema.extend({}).omit({
   id: true,
@@ -9,3 +10,6 @@ export const CommentCreateSchema = CommentSchema.extend({}).omit({
 });
 
 export const CommentUpdateSchema = CommentCreateSchema.partial();
+
+export type CommentCreateInput = z.infer<typeof CommentCreateSchema>;
+export type CommentUpdateInput = z.infer<typeof CommentUpdateSchema>;

@@ -5,7 +5,7 @@ import { Comment } from '@workspace/zod-schemas';
 export function CommentCards({ comments }: { comments: Comment[] }) {
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-8">
       <div className="flex justify-between">
         <div>
           Number of comments: 0
@@ -14,7 +14,7 @@ export function CommentCards({ comments }: { comments: Comment[] }) {
           Sort by Icon
         </div>
       </div>
-      <div>
+      <div className="flex flex-col gap-4">
         {comments.map((comment: Comment, index: number) => (
           <CommentCard key={index} comment={comment} />
         ))}
