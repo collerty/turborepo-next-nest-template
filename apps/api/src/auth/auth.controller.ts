@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { ProviderType } from '@prisma/client';
 import { ReqWithUser } from './req-with-user';
 import { Response } from 'express';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -29,9 +30,9 @@ export class AuthController {
   }
 
   @Post('logout')
-  logOut(@Req() req: ReqWithUser, @Res() res: Response) {
+  logOut(@Res() res: Response) {
     console.log('log out');
-    return this.authService.logout(req, res);
+    return this.authService.logout(res);
   }
 
   @Get('profile')
@@ -42,9 +43,10 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(JwtRefreshGuard)
   @Post('refresh')
-  async refreshToken(@Body('refreshToken') refreshToken: string, @Res({ passthrough: true }) res: Response) {
-    const newTokens = await this.authService.refreshTokens(refreshToken, res);
+  async refreshToken(@Req() req: ReqWithUser, @Res({ passthrough: true }) res: Response) {
+    const newTokens = await this.authService.refreshTokens(req.user, res);
     return newTokens;
   }
 

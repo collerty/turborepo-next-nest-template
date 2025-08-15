@@ -2,24 +2,23 @@
 
 import { Form, FormControl, FormField, FormItem } from '@workspace/ui/components/form';
 import { useForm } from 'react-hook-form';
-import { CommentCreateSchema } from '@workspace/zod-schemas';
+import { CommentCreateInput, CommentCreateSchema } from '@workspace/zod-schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Button } from '@workspace/ui/components/button';
 import { toast } from 'sonner';
 
 // TODO: type function prop later
-export function AddCommentForm({addComment} : {addComment: () => any}) {
-  const form = useForm<z.infer<typeof CommentCreateSchema>>({
+export function AddCommentForm({addComment} : {addComment: (comment: CommentCreateInput) => any}) {
+  const form = useForm<CommentCreateInput>({
     resolver: zodResolver(CommentCreateSchema),
     defaultValues: {
       content: '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof CommentCreateSchema>) {
+  async function onSubmit(value: CommentCreateInput) {
     console.log("on submit")
-    const res = await addComment();
+    const res = await addComment(value);
     console.log(res);
     toast('You submitted the following values', {
       description: (

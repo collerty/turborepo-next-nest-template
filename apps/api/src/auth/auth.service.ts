@@ -87,34 +87,21 @@ export class AuthService {
     return tokens;
   }
 
-  async logout(req: ReqWithUser, res: Response) {
+  async logout(res: Response) {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
     return res.status(200).json({ message: 'Logged out successfully' });
   }
 
-  async refreshTokens(refreshToken: string, res: Response) {
+  async refreshTokens(user: User, res: Response) {
     try {
-      const payload: Payload = this.jwtService.verify(refreshToken);
-
-      const user = await this.usersService.findOne(payload.sub);
-      if (!user) {
-        throw new UnauthorizedException('User not found');
-      }
-
-      // const isValid = await bcrypt.compare(refreshToken, user.refreshToken);
-      const isValid = refreshToken === user.refreshToken;
-      console.log(isValid, refreshToken, user.refreshToken);
-      if (!isValid) {
-        throw new UnauthorizedException('Invalid refresh token. Token is not valid.');
-      }
-
 
       const newPayload: Payload = { sub: user.id };
 
       const newTokens = this.signTokens(newPayload);
 
-      await this.updateRefreshToken(user.id, newTokens.refreshToken);
+      // await this.updateRefreshToken(user.id, newTokens.refreshToken);
+      await this.usersService.update(user.id, { refreshToken: newTokens.refreshToken });
 
       this.sendHttpOnlyCookies(res, newTokens);
 
