@@ -78,6 +78,7 @@ export class AuthService {
     const payload: Payload = { sub: user.id };
     const tokens = this.signTokens(payload);
 
+    console.log('DEBUG socLogUser:', user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     this.sendHttpOnlyCookies(res, tokens);
@@ -86,34 +87,21 @@ export class AuthService {
     return tokens;
   }
 
-  async logout(req: ReqWithUser, res: Response) {
+  async logout(res: Response) {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
     return res.status(200).json({ message: 'Logged out successfully' });
   }
 
-  async refreshTokens(refreshToken: string, res: Response) {
+  async refreshTokens(user: User, res: Response) {
     try {
-      const payload: Payload = this.jwtService.verify(refreshToken);
-
-      const user = await this.usersService.findOne(payload.sub);
-      if (!user) {
-        throw new UnauthorizedException('User not found');
-      }
-
-      // const isValid = await bcrypt.compare(refreshToken, user.refreshToken);
-      const isValid = refreshToken === user.refreshToken;
-      console.log(isValid, refreshToken, user.refreshToken);
-      if (!isValid) {
-        throw new UnauthorizedException('Invalid refresh token. Token is not valid.');
-      }
-
 
       const newPayload: Payload = { sub: user.id };
 
       const newTokens = this.signTokens(newPayload);
 
-      await this.updateRefreshToken(user.id, newTokens.refreshToken);
+      // await this.updateRefreshToken(user.id, newTokens.refreshToken);
+      await this.usersService.update(user.id, { refreshToken: newTokens.refreshToken });
 
       this.sendHttpOnlyCookies(res, newTokens);
 
@@ -126,6 +114,7 @@ export class AuthService {
   updateRefreshToken(userId: number, refreshToken: string) {
     // const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     console.log('update refresh token', refreshToken);
+    console.log("DEBUG refresh token: ", userId)
     return this.usersService.update(userId, { refreshToken: refreshToken });
   }
 
@@ -149,7 +138,7 @@ export class AuthService {
   sendHttpOnlyCookies(res: Response, tokens: Tokens): void {
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       domain: this.configService.get<string>('COOKIE_DOMAIN'),
       maxAge: 60 * 60 * 1000, // 1 hour
@@ -158,7 +147,7 @@ export class AuthService {
 
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       domain: this.configService.get<string>('COOKIE_DOMAIN'),
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days

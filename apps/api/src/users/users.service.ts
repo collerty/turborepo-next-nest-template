@@ -6,6 +6,7 @@ import { RegisterDto } from '../auth/dto/register.dto';
 import { ProviderType, SocialTokens, User } from '@prisma/client';
 import { Profile as GithubProfile } from 'passport-github2';
 import { Profile as GoogleProfile } from 'passport-google-oauth20';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,15 @@ export class UsersService {
   }
 
   create(createUserDto: RegisterDto | CreateUserDto) {
-    return this.prisma.user.create({ data: createUserDto });
+    const { email, name, password } = createUserDto;
+    return this.prisma.user.create({
+      data:
+        {
+          email,
+          name,
+          password,
+        },
+    });
   }
 
   findAll() {
@@ -46,7 +55,11 @@ export class UsersService {
     return null;
   }
 
-  async findOrCreateUser(profile: GithubProfile | GoogleProfile, provider: ProviderType): Promise<SocialTokens | User> {
+  isEmptyObject(obj: object | null | undefined): boolean {
+    return !obj || Object.keys(obj).length === 0
+  }
+
+  async findOrCreateUser(profile: GithubProfile | GoogleProfile, provider: ProviderType): Promise<User> {
     console.log('find or create user');
     console.log(profile);
     console.log('DEBUG:', provider);
@@ -56,18 +69,24 @@ export class UsersService {
     }
     const socialTokens = await this.findOneByProvider(profile.id, provider);
     console.log(socialTokens);
-    if (!socialTokens) {
+    console.log(this.isEmptyObject(socialTokens));
+    if (this.isEmptyObject(socialTokens)) {
       switch (provider) {
         case ProviderType.GITHUB:
           return this.createGithubUser(profile as GithubProfile);
         case ProviderType.GOOGLE:
           return this.createGoogleUser(profile as GoogleProfile);
         default:
-          throw new Error('Unsupported provider')
+          throw new Error('Unsupported provider');
       }
     }
 
-    return socialTokens;
+    const user = await this.findOne(socialTokens!.userId);
+    console.log("User added to the req", user)
+    if (!user ) {
+      throw new Error('User could not be added to req');
+    }
+    return user;
   }
 
   findOneByProvider(providerUserId: string, provider: ProviderType) {
@@ -111,7 +130,10 @@ export class UsersService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    }
     return this.prisma.user.update({
       where: { id },
       data: { ...updateUserDto },

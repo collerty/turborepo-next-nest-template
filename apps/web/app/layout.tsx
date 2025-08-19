@@ -1,12 +1,14 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import '@workspace/ui/globals.css';
-import { Providers } from '@/components/providers';
+import { ThemeProvider } from '@/components/theme-provider';
 import { SiteHeader } from '@/components/header/site-header';
 import { cn } from '@workspace/ui/lib/utils';
 import { fontVariables } from '@workspace/ui/lib/fonts';
 import { Toaster } from '@workspace/ui/components/sonner';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
+import { LayoutProvider } from '@/hooks/use-layout';
+import { RootProvider } from 'fumadocs-ui/provider';
 
 const fontSans = Geist({
   subsets: ['latin'],
@@ -31,12 +33,16 @@ export default function RootLayout({
         fontVariables,
       )}
     >
-    <Providers>
-      <SiteHeader />
-      {children}
-      <TailwindIndicator/>
-      <Toaster position="top-center" />
-    </Providers>
+    <RootProvider>
+      <ThemeProvider>
+        <LayoutProvider>
+          {/*<SiteHeader />*/}
+          {children}
+          <TailwindIndicator />
+          <Toaster position="top-center" />
+        </LayoutProvider>
+      </ThemeProvider>
+    </RootProvider>
     </body>
     </html>
   );

@@ -25,6 +25,7 @@ export class CommentsController {
   @Post()
   create(@Body() createCommentDto: CreateCommentDto, @Req() req: ReqWithUser) {
     console.log(CreateCommentDto)
+    console.log("creating comment")
     return this.commentsService.create(createCommentDto, req.user.id);
   }
 

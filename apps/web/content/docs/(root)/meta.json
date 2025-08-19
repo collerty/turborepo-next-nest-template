@@ -1,0 +1,10 @@
+{
+  "title": "Get Started",
+  "pages": [
+    "index",
+    "introduction",
+    "prisma-cli",
+    "shadcn-ui",
+    "auth"
+  ]
+}

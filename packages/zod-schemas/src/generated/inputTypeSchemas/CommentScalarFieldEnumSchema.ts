@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
-export const CommentScalarFieldEnumSchema = z.enum(['id','title','content','authorId','likes','createdAt','updateAt']);
+export const CommentScalarFieldEnumSchema = z.enum(['id','content','authorId','likes','createdAt','updatedAt']);
 
 export default CommentScalarFieldEnumSchema;

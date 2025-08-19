@@ -1,0 +1,103 @@
+---
+title: Prisma CLI
+description: Get to know how to use Prisma CLI inside the project
+---
+
+## Prerequisite
+
+Run commands from `/apps/api`.
+With Bun, use `bunx` to run Prisma CLI.
+
+---
+
+## Create a migration
+
+After updating `schema.prisma`:
+
+```bash title="Terminal  | (root)/apps/api"
+bunx prisma migrate dev --name <name>
+```
+
+- Applies the migration to your local DB
+- Regenerates the Prisma Client
+
+---
+
+## Deploy migrations (prod)
+
+```bash title="Terminal  | (root)/apps/api"
+bunx prisma migrate deploy
+```
+
+- Runs all pending SQL migrations in `prisma/migrations`
+
+This is what your `migrate` script does:
+
+```json title="(root)/apps/api/package.json"
+"migrate": "bunx prisma migrate deploy"
+```
+
+---
+
+## Push schema without migration
+
+```bash title="Terminal  | (root)/apps/api"
+bunx prisma db push
+```
+
+- Updates the DB to match your schema
+- Doesn’t create migration files
+- Useful for local prototyping
+
+---
+
+## Reset the database
+
+```bash title="Terminal  | (root)/apps/api"
+bunx prisma migrate reset
+```
+
+- Drops the DB
+- Reapplies all migrations
+- Runs seed if configured
+
+---
+
+## Generate Prisma Client
+
+```bash title="Terminal  | (root)/apps/api"
+bunx prisma generate
+```
+
+> If you’re not using `bun dev`, which runs this automatically
+
+---
+
+## Migration folder
+
+Migrations are saved in:
+
+```
+/apps/api/prisma/migrations/<timestamp>_<name>/
+```
+
+Each contains:
+- `migration.sql`
+- `migration_lock.toml`
+
+---
+
+## Typical workflow
+
+```bash title="Terminal  | (root)/apps/api"
+# Edit schema
+# Create migration
+bunx prisma migrate dev --name <name>
+
+# Commit
+git add prisma/schema.prisma prisma/migrations/
+git commit -m "migration: <name>"
+
+# Deploy
+bun run migrate
+```
