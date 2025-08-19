@@ -13,7 +13,8 @@ function cookieExtractor(req: ReqWithUser | Request) {
   if (req && req.cookies) {
     token = req.signedCookies['refreshToken'];
   }
-  console.log(token ? token : "no refresh token in cookies")
+  console.log(token ? token : "no refresh token in cookies" )
+  console.log(req.cookies)
   return token;
 };
 

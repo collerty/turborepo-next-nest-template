@@ -138,7 +138,7 @@ export class AuthService {
   sendHttpOnlyCookies(res: Response, tokens: Tokens): void {
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       domain: this.configService.get<string>('COOKIE_DOMAIN'),
       maxAge: 60 * 60 * 1000, // 1 hour
@@ -147,7 +147,7 @@ export class AuthService {
 
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       domain: this.configService.get<string>('COOKIE_DOMAIN'),
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days

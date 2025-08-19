@@ -41,7 +41,9 @@ export function RefreshTokensButton({ refreshTokens }: { refreshTokens: any }) {
   return (
     <div className="">
       <Button onClick={async () => {
-        await refreshTokens();
+        // await refreshTokens();
+        const res = await fetch('http://localhost:4000/auth/refresh', { method: 'POST', credentials: 'include' });
+        console.log(res)
       }}>
         Refresh Tokens
       </Button>

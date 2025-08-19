@@ -1,15 +1,7 @@
-'use server';
+'use client';
 
-import { cookies } from 'next/headers';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
-
-// TODO: remove console.log(s)
-export async function getAuthTokens() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken');
-  const refreshToken = cookieStore.get('refreshToken');
-  return { accessToken, refreshToken };
-}
+import { clearAuthTokens, getAuthTokens, setAuthTokens } from '@/lib/actions/(shared)/auth-tokens';
 
 export async function handleTokenRefresh() {
   try {
@@ -45,35 +37,4 @@ export async function handleTokenRefresh() {
     await clearAuthTokens();
     throw new Error(`Token refresh failed: ${(error as Error).message || error}`);
   }
-}
-
-
-export async function setAuthTokens(accessToken: string, refreshToken: string) {
-  const cookieStore = await cookies();
-  cookieStore.set('accessToken', accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    path: '/',
-  });
-
-  cookieStore.set('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    path: '/auth/refresh',
-  });
-}
-
-export async function clearAuthTokens() {
-  const cookieStore = await cookies();
-
-  cookieStore.delete('accessToken');
-  cookieStore.delete('refreshToken');
-}
-
-// only for testing purpose TODO: Remove when playground is removed
-export async function clearAccessToken() {
-  const cookieStore = await cookies();
-  cookieStore.delete('accessToken');
 }

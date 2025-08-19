@@ -3,9 +3,9 @@ import { CommentCards } from '@/components/comments/comments';
 import { addComment, getComments } from '@/lib/actions/comments.actions';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
 import { AuthDialog } from '@/components/auth/auth-dialog';
+import { Suspense } from 'react';
 
 export default async function Page() {
-  const comments = await getComments();
   return (
     <div className="container-wrapper flex-1 flex flex-col px-2">
       <div
@@ -13,7 +13,10 @@ export default async function Page() {
         <div className="flex flex-col lg:w-(--comments-width) gap-4">
           <AuthDialog apiUrl={getApiUrl()} />
           <AddCommentForm addComment={addComment} />
-          <CommentCards comments={comments} />
+          <Suspense fallback={<div>loading </div>}>
+            <CommentCards />
+          </Suspense>
+
         </div>
       </div>
     </div>

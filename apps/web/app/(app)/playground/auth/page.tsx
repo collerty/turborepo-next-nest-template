@@ -1,6 +1,9 @@
 import { Button } from '@workspace/ui/components/button';
 import { ClearAccessTokenButton, GetTokensButton, RefreshTokensButton } from '@/components/playground/auth';
-import { clearAccessToken, getAuthTokens, handleTokenRefresh } from '@/lib/actions/(shared)/auth-tokens';
+import {
+  clearAccessToken, getAuthTokens,
+  handleTokenRefresh,
+} from '@/lib/actions/(shared)/auth-tokens';
 
 export default function AuthPlaygroundPage() {
   return (
