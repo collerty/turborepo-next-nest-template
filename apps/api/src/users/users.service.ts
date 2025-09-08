@@ -104,7 +104,8 @@ export class UsersService {
     return this.prisma.user.create({
       data: {
         email: profile.emails![0].value,
-        name: null, // ask for it later
+        name: profile.name?.givenName,
+        picture: profile.photos?.[0]?.value,
         socialTokens: {
           create: {
             providerUserId: profile.id,
@@ -119,7 +120,8 @@ export class UsersService {
     return this.prisma.user.create({
       data: {
         email: profile.emails![0].value,
-        name: null, // ask for it later
+        name: profile.name?.givenName,
+        picture: profile.photos?.[0]?.value,
         socialTokens: {
           create: {
             providerUserId: profile.id,

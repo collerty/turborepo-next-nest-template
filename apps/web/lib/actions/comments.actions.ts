@@ -3,10 +3,13 @@
 import { fetcher } from '@/lib/actions/(shared)/fetcher';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
 import { CommentCreateInput } from '@workspace/zod-schemas';
+import { revalidateTag } from 'next/cache';
 
 export async function getComments() {
   try {
-    const data = await fetch(`${getApiUrl()}/comments/`);
+    const data = await fetch(`${getApiUrl()}/comments/`, {
+      next: { tags: ['comments'] },
+    });
 
     return await data.json();
   } catch (e) {
@@ -21,6 +24,8 @@ export async function addComment(comment: CommentCreateInput) {
       body: JSON.stringify(comment),
       method: 'POST',
     }) as Comment;
+
+    revalidateTag('comments');
 
     return newComment;
   } catch (e) {

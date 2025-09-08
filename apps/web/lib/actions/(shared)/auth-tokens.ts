@@ -2,6 +2,8 @@
 
 import { cookies } from 'next/headers';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
+import setCookieParser from 'set-cookie-parser';
+
 
 // TODO: remove console.log(s)
 export async function getAuthTokens() {
@@ -28,14 +30,12 @@ export async function handleTokenRefresh() {
     });
     console.log('res after refresh token', res);
 
-    if (!res.ok) {
+    if (!res.ok || res.headers.getSetCookie().length === 0) {
       console.log('failed to refresh token');
       throw new Error(`failed to refresh token: ${refreshToken.value}`);
     }
-    const { accessToken, refreshToken: newRefreshToken } = await res.json();
-    console.log('new refreshToken', newRefreshToken);
 
-    await setAuthTokens(accessToken, newRefreshToken);
+    await setCookiesFromSetCookieHeaders(res.headers.getSetCookie());
 
     return new Response('Token refreshed', {
       status: 200,
@@ -48,21 +48,23 @@ export async function handleTokenRefresh() {
 }
 
 
-export async function setAuthTokens(accessToken: string, refreshToken: string) {
-  const cookieStore = await cookies();
-  cookieStore.set('accessToken', accessToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    path: '/',
-  });
+export async function setCookiesFromSetCookieHeaders(setCookies: string[]) {
 
-  cookieStore.set('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: true,
-    sameSite: 'none',
-    path: '/auth/refresh',
-  });
+  const parsedCookies = setCookieParser(setCookies, { map: true });
+
+  const cookieStore = await cookies();
+  for (const [name, { value, ...options }] of Object.entries(parsedCookies)) {
+    cookieStore.set(name, value, {
+
+      httpOnly: options.httpOnly,
+      secure: options.secure,
+      path: options.path,
+      expires: options.expires,
+      sameSite: options.sameSite as 'lax' | 'strict' | 'none' | undefined,
+    });
+  }
+
+  return { success: true };
 }
 
 export async function clearAuthTokens() {

@@ -46,8 +46,8 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
   async refreshToken(@Req() req: ReqWithUser, @Res({ passthrough: true }) res: Response) {
-    const newTokens = await this.authService.refreshTokens(req.user, res);
-    return newTokens;
+    return await this.authService.refreshTokens(req.user, res);
+
   }
 
   @Public()
@@ -62,10 +62,11 @@ export class AuthController {
   async googleAuthRedirect(@Req() req: ReqWithUser, @Res({ passthrough: true }) res: Response) {
     await this.authService.socialLogin(req.user, ProviderType.GOOGLE, res);
 
+    const page = '/comments';
     const redirectUrl = this.configService.get<string>(
       'NEXT_URL_PRODUCTION',
       'http://localhost:3000', // fallback to localhost if not set
-    );
+    ) + page;
 
 
     return res.redirect(redirectUrl);
@@ -84,10 +85,11 @@ export class AuthController {
     console.log('DEBUG githubRedirect:', req.user);
     await this.authService.socialLogin(req.user, ProviderType.GITHUB, res);
 
+    const page = '/comments';
     const redirectUrl = this.configService.get<string>(
       'NEXT_URL_PRODUCTION',
       'http://localhost:3000', // fallback to localhost if not set
-    );
+    ) + page;
 
     return res.redirect(redirectUrl);
   }
