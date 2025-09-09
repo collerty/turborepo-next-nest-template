@@ -1,8 +1,8 @@
 // @ts-nocheck -- skip type checking
-import * as docs_3 from "../content/docs/(root)/shadcn-ui.mdx?collection=docs&hash=1757408724734"
-import * as docs_2 from "../content/docs/(root)/prisma-cli.mdx?collection=docs&hash=1757408724734"
-import * as docs_1 from "../content/docs/(root)/introduction.mdx?collection=docs&hash=1757408724734"
-import * as docs_0 from "../content/docs/(root)/auth.mdx?collection=docs&hash=1757408724734"
+import * as docs_3 from "../content/docs/(root)/shadcn-ui.mdx?collection=docs&hash=1757414654848"
+import * as docs_2 from "../content/docs/(root)/prisma-cli.mdx?collection=docs&hash=1757414654848"
+import * as docs_1 from "../content/docs/(root)/introduction.mdx?collection=docs&hash=1757414654848"
+import * as docs_0 from "../content/docs/(root)/auth.mdx?collection=docs&hash=1757414654848"
 import { _runtime } from "fumadocs-mdx"
 import * as _source from "../source.config"
 export const docs = _runtime.docs<typeof _source.docs>([{ info: {"path":"(root)/auth.mdx","absolutePath":"/Users/collerty/WebstormProjects/turborepo-next-nest-template/apps/docs/content/docs/(root)/auth.mdx"}, data: docs_0 }, { info: {"path":"(root)/introduction.mdx","absolutePath":"/Users/collerty/WebstormProjects/turborepo-next-nest-template/apps/docs/content/docs/(root)/introduction.mdx"}, data: docs_1 }, { info: {"path":"(root)/prisma-cli.mdx","absolutePath":"/Users/collerty/WebstormProjects/turborepo-next-nest-template/apps/docs/content/docs/(root)/prisma-cli.mdx"}, data: docs_2 }, { info: {"path":"(root)/shadcn-ui.mdx","absolutePath":"/Users/collerty/WebstormProjects/turborepo-next-nest-template/apps/docs/content/docs/(root)/shadcn-ui.mdx"}, data: docs_3 }], [{"info":{"path":"(root)/meta.json","absolutePath":"/Users/collerty/WebstormProjects/turborepo-next-nest-template/apps/docs/content/docs/(root)/meta.json"},"data":{"title":"Get Started","pages":["index","introduction","prisma-cli","shadcn-ui","auth"]}}])
