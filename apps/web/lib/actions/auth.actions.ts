@@ -12,7 +12,6 @@ interface LoginBody {
 }
 
 
-
 // login with credentials; not used in social login
 export async function login(body: LoginBody): Promise<ApiResponse<Tokens>> {
   try {
@@ -38,7 +37,7 @@ export async function login(body: LoginBody): Promise<ApiResponse<Tokens>> {
 }
 
 
-export async function getProfile(): Promise<ApiResponse<User>> {
+export async function getProfile(): Promise<User> {
   try {
     const data = await fetcher(`${getApiUrl()}/auth/profile`, {
       method: 'GET',
@@ -48,8 +47,9 @@ export async function getProfile(): Promise<ApiResponse<User>> {
 
     return data;
     /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
-  } catch (error: any) {
-    return { success: false, error: error };
+  } catch (e) {
+    // TODO: idk how to type it
+    console.log(e);
   }
 }
 
@@ -57,19 +57,19 @@ export async function logout(): Promise<void> {
   // let redirectPath: string | null = null;
 
   try {
-    const { accessToken } = await getAuthTokens();
-    const headers = {
-      'Content-Type': 'application/json',
-      Authorization: accessToken ? `Bearer ${accessToken.value}` : undefined,
-    };
-    await fetch(`${getApiUrl()}/auth/logout`, {
-      method: 'POST',
-      credentials: 'include',
-      ...headers,
-    });
-    console.log('clear auth tokens');
+    // const { accessToken } = await getAuthTokens();
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   Authorization: accessToken ? `Bearer ${accessToken.value}` : undefined,
+    // };
+    // await fetch(`${getApiUrl()}/auth/logout`, {
+    //   method: 'POST',
+    //   credentials: 'include',
+    //   ...headers,
+    // });
+    // console.log('clear auth tokens');
     await clearAuthTokens();
-    console.log('revalidate path');
+    // console.log('revalidate path');
     // window.location.href = '/';
     // revalidatePath('/', 'layout');
   } catch (e) {

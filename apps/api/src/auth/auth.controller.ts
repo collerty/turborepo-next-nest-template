@@ -37,7 +37,7 @@ export class AuthController {
 
   @Get('profile')
   getProfile(@Req() req: ReqWithUser) {
-    console.log('requested profile');
+    console.log('requested profile', req.user);
     const { password, ...user } = req.user;
     return user;
   }

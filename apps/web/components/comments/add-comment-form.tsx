@@ -6,9 +6,11 @@ import { CommentCreateInput, CommentCreateSchema } from '@workspace/zod-schemas'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@workspace/ui/components/button';
 import { toast } from 'sonner';
+import { useState } from 'react';
 
 // TODO: type function prop later
 export function AddCommentForm({addComment} : {addComment: (comment: CommentCreateInput) => any}) {
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<CommentCreateInput>({
     resolver: zodResolver(CommentCreateSchema),
     defaultValues: {
@@ -17,6 +19,7 @@ export function AddCommentForm({addComment} : {addComment: (comment: CommentCrea
   });
 
   async function onSubmit(value: CommentCreateInput) {
+    setLoading(true);
     console.log("on submit")
     const res = await addComment(value);
     console.log(res);
@@ -27,6 +30,7 @@ export function AddCommentForm({addComment} : {addComment: (comment: CommentCrea
         </pre>
       ),
     });
+    setLoading(false);
   }
 
   return (
@@ -42,7 +46,7 @@ export function AddCommentForm({addComment} : {addComment: (comment: CommentCrea
                        </FormControl>
 
                        <div className="flex justify-end">
-                         <Button type="submit" className="rounded-xl" size="lg">Submit</Button>
+                         <Button type="submit" className="rounded-xl" size="lg" disabled={loading}>Submit</Button>
                        </div>
                      </FormItem>
                    )} />
