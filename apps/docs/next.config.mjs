@@ -6,6 +6,7 @@ const withMDX = createMDX();
 const config = {
   basePath: '/docs',
   transpilePackages: ['@workspace/ui'],
+  experimental: { externalDir: true },
   typescript: {
     ignoreBuildErrors: true,
   },

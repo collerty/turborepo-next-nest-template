@@ -1,5 +1,3 @@
-import { Geist, Geist_Mono } from 'next/font/google';
-
 import '@workspace/ui/globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SiteHeader } from '@/components/header/site-header';
@@ -8,17 +6,6 @@ import { fontVariables } from '@workspace/ui/lib/fonts';
 import { Toaster } from '@workspace/ui/components/sonner';
 import { TailwindIndicator } from '@/components/tailwind-indicator';
 import { LayoutProvider } from '@/hooks/use-layout';
-import { RootProvider } from 'fumadocs-ui/provider';
-
-const fontSans = Geist({
-  subsets: ['latin'],
-  variable: '--font-sans',
-});
-
-const fontMono = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-});
 
 export default function RootLayout({
                                      children,
@@ -33,16 +20,14 @@ export default function RootLayout({
         fontVariables,
       )}
     >
-    <RootProvider>
-      <ThemeProvider>
-        <LayoutProvider>
-          {/*<SiteHeader />*/}
-          {children}
-          <TailwindIndicator />
-          <Toaster position="top-center" />
-        </LayoutProvider>
-      </ThemeProvider>
-    </RootProvider>
+    <ThemeProvider>
+      <LayoutProvider>
+        {/*<SiteHeader />*/}
+        {children}
+        <TailwindIndicator />
+        <Toaster position="top-center" />
+      </LayoutProvider>
+    </ThemeProvider>
     </body>
     </html>
   );
