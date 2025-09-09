@@ -1,20 +1,18 @@
 'use client';
 
-import { source } from '@/lib/source';
 import { Popover, PopoverContent, PopoverTrigger } from '@workspace/ui/components/popover';
 import { Button } from '@workspace/ui/components/button';
 import { cn } from '@workspace/ui/lib/utils';
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LinkProps } from 'fumadocs-core/link';
 
 export function MobileNav({
                             tree,
                             items,
                             className,
                           }: {
-  tree: typeof source.pageTree,
+  tree: any,
   items: { href: string, label: string }[],
   className?: string
 }) {
@@ -73,7 +71,7 @@ export function MobileNav({
               ))}
             </div>
             <div className="flex flex-col gap-8">
-              {tree?.children?.map((group, index) => {
+              {tree?.children?.map((group: any, index: number) => {
                 if (group.type === 'folder') {
                   return (
                     <div key={index} className="flex flex-col gap-4">
@@ -81,7 +79,7 @@ export function MobileNav({
                         {group.name}
                       </div>
                       <div className="flex flex-col gap-3">
-                        {group.children.map((item) => {
+                        {group.children.map((item: any) => {
                           if (item.type === 'page') {
                             return (
                               <MobileLink
@@ -117,7 +115,8 @@ function MobileLink({
                       className,
                       children,
                       ...props
-                    }: LinkProps & {
+                    }: {
+  href: string
   onOpenChange?: (open: boolean) => void
   children: React.ReactNode
   className?: string

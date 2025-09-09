@@ -1,8 +1,2 @@
-// .source folder will be generated when you run `next dev`
-import { docs } from '@/.source';
-import { loader } from 'fumadocs-core/source';
-
-export const source: ReturnType<typeof loader> = loader({
-  baseUrl: '/docs',
-  source: docs.toFumadocsSource(),
-});
+// Moved docs to apps/docs; this file is no longer used.
+export {};
