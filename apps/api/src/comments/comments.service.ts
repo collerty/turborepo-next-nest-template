@@ -23,7 +23,20 @@ export class CommentsService {
   }
 
   findAll() {
-    return this.prisma.comment.findMany();
+    return this.prisma.comment.findMany(
+      {
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              picture: true,
+            }
+
+          },
+        },
+      },
+    );
   }
 
   findOne(id: number) {

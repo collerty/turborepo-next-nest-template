@@ -2,7 +2,7 @@
 
 import { ApiResponse } from '@/lib/actions/(shared)/api-response';
 import { fetcher } from '@/lib/actions/(shared)/fetcher';
-import { clearAuthTokens, getAuthTokens, setAuthTokens } from '@/lib/actions/(shared)/auth-tokens';
+import { clearAuthTokens, getAuthTokens } from '@/lib/actions/(shared)/auth-tokens';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
 import { Tokens, User } from '@workspace/zod-schemas';
 
@@ -26,7 +26,7 @@ export async function login(body: LoginBody): Promise<ApiResponse<Tokens>> {
     }) as any; // TODO: make a type here
 
     if (data.accessToken && data.refreshToken) {
-      await setAuthTokens(data.accessToken, data.refreshToken);
+      // await setAuthTokens(data.accessToken, data.refreshToken);
     }
 
 
@@ -44,9 +44,9 @@ export async function getProfile(): Promise<ApiResponse<User>> {
       method: 'GET',
       credentials: 'include',
       cache: 'no-store',
-    });
+    }) as any; // TODO: change type
 
-    return { success: true, data: data };
+    return data;
     /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
   } catch (error: any) {
     return { success: false, error: error };

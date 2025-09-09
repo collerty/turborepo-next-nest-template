@@ -105,7 +105,10 @@ export class AuthService {
 
       this.sendHttpOnlyCookies(res, newTokens);
 
-      return newTokens;
+      // can't return accesstoken and refreshtoken here as they will not be signed
+      return {
+        message: 'Token refreshed',
+      };
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }
@@ -114,7 +117,7 @@ export class AuthService {
   updateRefreshToken(userId: number, refreshToken: string) {
     // const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     console.log('update refresh token', refreshToken);
-    console.log("DEBUG refresh token: ", userId)
+    console.log('DEBUG refresh token: ', userId);
     return this.usersService.update(userId, { refreshToken: refreshToken });
   }
 
@@ -138,20 +141,20 @@ export class AuthService {
   sendHttpOnlyCookies(res: Response, tokens: Tokens): void {
     res.cookie('accessToken', tokens.accessToken, {
       httpOnly: true,
-      // secure: true,
+      secure: true,
       sameSite: 'none',
       domain: this.configService.get<string>('COOKIE_DOMAIN'),
       maxAge: 60 * 60 * 1000, // 1 hour
-      signed: true
+      signed: true,
     });
 
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
-      // secure: true,
+      secure: true,
       sameSite: 'none',
       domain: this.configService.get<string>('COOKIE_DOMAIN'),
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      signed: true
+      signed: true,
     });
   }
 }

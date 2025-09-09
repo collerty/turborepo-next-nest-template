@@ -1,5 +1,5 @@
 import { AddCommentForm } from '@/components/comments/add-comment-form';
-import { CommentCards } from '@/components/comments/comments';
+import { CommentCards, CommentCardsSkeleton } from '@/components/comments/comments';
 import { addComment, getComments } from '@/lib/actions/comments.actions';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
 import { AuthDialog } from '@/components/auth/auth-dialog';
@@ -13,9 +13,12 @@ export default async function Page() {
         <div className="flex flex-col lg:w-(--comments-width) gap-4">
           <AuthDialog apiUrl={getApiUrl()} />
           <AddCommentForm addComment={addComment} />
-          <Suspense fallback={<div>loading </div>}>
+          <Suspense fallback={<CommentCardsSkeleton />}>
             <CommentCards />
           </Suspense>
+          {/*<CommentCardsSkeleton />*/}
+
+
 
         </div>
       </div>

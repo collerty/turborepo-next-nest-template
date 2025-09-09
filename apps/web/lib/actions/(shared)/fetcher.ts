@@ -22,11 +22,11 @@ export async function fetcher(
   try {
     const res = await fetch(url, { ...options, headers, credentials: 'include' });
 
-    // if (res.status === 401 && refreshToken?.value && !hasRetried) {
-    //   console.log('Refreshing token and retrying...');
-    //   await handleTokenRefresh();
-    //   return fetcher(url, options, true);
-    // }
+    if (res.status === 401 && refreshToken?.value && !hasRetried) {
+      console.log('Refreshing token and retrying...');
+      await handleTokenRefresh();
+      return fetcher(url, options, true);
+    }
 
     if (!res.ok) {
       const errorText = await res.text();

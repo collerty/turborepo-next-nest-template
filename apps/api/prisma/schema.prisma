@@ -39,6 +39,8 @@ model User {
   name      String?    @db.VarChar(100) // ask name after social login
   /// @zod.string.min(8, { message: "Password must contain at least 8 characters" }).max(32, { message: "Password can't exceed 32 characters" })
   password  String?    @db.VarChar(255)
+  /// @zod.string.min(10, { message: "Picture must contain at least 10 characters" })
+  picture String? @db.VarChar(255)
   comments  Comment[]
   socialTokens SocialTokens?
   refreshToken String? @db.VarChar(1000)

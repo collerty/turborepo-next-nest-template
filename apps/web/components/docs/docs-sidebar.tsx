@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
-import type { source } from "@/lib/source"
+// docs moved to apps/docs; keep component shape but decouple from source type
 import {
   Sidebar,
   SidebarContent,
@@ -22,7 +22,7 @@ import type { PageTree } from 'fumadocs-core/server';
 export function DocsSidebar({
                               tree,
                               ...props
-                            }: React.ComponentProps<typeof Sidebar> & { tree: typeof source.pageTree }) {
+                            }: React.ComponentProps<typeof Sidebar> & { tree: any }) {
   const pathname = usePathname();
 
   return (
@@ -33,7 +33,7 @@ export function DocsSidebar({
     >
       <SidebarContent className="no-scrollbar px-2 pb-12">
         <div className="h-(--top-spacing) shrink-0" />
-        {tree.children.map((item) => (
+        {tree.children.map((item: any) => (
           <SidebarGroup key={item.$id}>
             <SidebarGroupLabel className="text-muted-foreground font-medium">
               {item.name}
@@ -41,7 +41,7 @@ export function DocsSidebar({
             <SidebarGroupContent>
               {item.type === "folder" && (
                 <SidebarMenu className="gap-0.5">
-                  {item.children.map((item) => {
+                  {item.children.map((item: any) => {
                     return (
                       item.type === "page" && (
                         <SidebarMenuItem key={item.url}>
