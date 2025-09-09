@@ -22,9 +22,11 @@
     "build": "turbo build",
     "prisma-generate": "cd apps/api && bun run generate",
     "build:api": "bun run prisma-generate && turbo build --filter=api",
-    "dev": "turbo run dev --filter=./apps/web --filter=./apps/api",
+    "dev": "turbo run dev --filter=./apps/web --filter=./apps/api --filter=./apps/docs",
+    "dev:web+docs": "turbo run dev --filter=./apps/web --filter=./apps/docs",
     "dev:web": "turbo dev --filter=./apps/web",
     "dev:api": "turbo dev --filter=./apps/api",
+    "dev:docs": "turbo dev --filter=./apps/docs",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
