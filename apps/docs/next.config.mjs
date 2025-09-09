@@ -5,6 +5,7 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   basePath: '/docs',
+  transpilePackages: ['@workspace/ui'],
   typescript: {
     ignoreBuildErrors: true,
   },
