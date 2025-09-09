@@ -9,5 +9,13 @@ const config = {
       { protocol: 'https', hostname: 'pbs.twimg.com' }, // Twitter/X
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/docs/:path*',
+        destination: 'https://turborepo-next-nest-template-docs.vercel.app/docs/:path*',
+      },
+    ];
+  },
 };
 export default config;

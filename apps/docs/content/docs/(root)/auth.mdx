@@ -1,8 +1,78 @@
 ---
-title: auth
-description: TODO write auth docs ( cookies / api && web validations )
+title: Authentication
+description: How auth works across the Web (Next.js) and API (NestJS) apps
 ---
 
-## Content
+## Overview
 
+This monorepo uses a token-based auth flow:
+
+- Web (Next.js) handles UI and stores tokens in HTTP-only cookies.
+- API (NestJS + Prisma) issues and validates tokens, and exposes auth endpoints.
+
+Tokens are never accessible from JavaScript (HTTP-only). CSRF is mitigated by same-site cookies and server-only validation.
+
+## Environment variables
+
+Set these for both local and production. Names already exist; update values as needed.
+
+```bash title="(root)/apps/api/.env"
+DATABASE_URL="postgresql://username:password@hostname:5432/mydb?schema=public"
+
+JWT_SECRET="secret-key"
+
+API_URL_PRODUCTION=http://localhost:4000
+NEXT_URL_PRODUCTION="http://localhost:3000"
+
+COOKIE_DOMAIN="localhost"
+COOKIE_SECRET="secret-key"
+
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
+
+```bash title="(root)/apps/web/.env"
+API_URL="http://localhost:4000"
+```
+
+## API endpoints (NestJS)
+
+Common endpoints exposed by the API service:
+
+- POST `/auth/register`: create account (email, password)
+- POST `/auth/login`: authenticate, returns access/refresh tokens (via Set-Cookie)
+- POST `/auth/refresh`: rotate tokens using refresh token
+- POST `/auth/logout`: revoke refresh token and clear cookies
+- GET `/users/me`: current user (requires access token)
+
+All protected routes expect a valid access token. The API sets cookies with:
+
+- `access_token`: short-lived, HTTP-only, SameSite=Lax
+- `refresh_token`: long-lived, HTTP-only, SameSite=Lax
+
+## Web app (Next.js) integration
+
+The Web app calls API routes through `fetch` on the server (Server Actions / Route Handlers) so cookies flow automatically.
+
+### Getting the current user (SSR)
+
+```ts title="apps/web/lib/actions/auth.actions.ts"
+export async function getCurrentUser() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+    credentials: 'include',
+    cache: 'no-store',
+  });
+  if (!res.ok) return null;
+  return res.json();
+}
+```
+
+
+## Refresh flow
+
+- When the access token expires, the Web app can call `/auth/refresh` (server-side) which sets a new pair of tokens.
+- If refresh fails (expired/invalid), force logout and redirect to login.
 

@@ -1,43 +1,87 @@
 ---
 title: Introduction
+description: Overview, quick start, structure, workflow, and deployment
 ---
 
-## What is this?
+## Overview of the stack
 
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
+- Web: Next.js App Router (`apps/web`)
+- API: NestJS + Prisma (`apps/api`)
+- Types: Shared Zod Typed (`packages/zod-schemas`)
+- UI: shared component library (`packages/ui`)
+- Config: shared TypeScript/ESLint configs (`packages/typescript-config`, `packages/eslint-config`)
+- Docs: Fumadocs MDX site (`apps/docs`) served under `/docs`
 
-### Subchapter
+Why Turborepo: faster incremental builds, shared config, single dependency graph, and clear separation of concerns.
 
-Takopi's original sin.<br />
-Takopi's original sin.<br />
-Takopi's original sin.<br />
-Takopi's original sin.<br />
+## Quick start
 
-### Subchapter 2
+1. Install deps at repo root:
+   ```bash
+   bun install
+   ```
+2. Env setup:
+   - `apps/api/.env` → database + JWT secrets (see Auth page)
+   - `apps/web/.env` → `API_URL=http://localhost:4000` ( or public API url for prodcution)
+3. Run dev:
+   ```bash
+   bun dev                 # api + web + docs
+   bun run dev:web+docs    # web on 3000, docs on 3001
+   bun run dev:api         # API (in parallel)
+   ```
+4. Visit:
+   - Web: http://localhost:3000
+   - Docs: http://localhost:3001/docs
 
-Takopi's original sin.<br />
-Takopi's original sin.<br />
-Takopi's original sin.<br />
-Takopi's original sin.<br />
+## Project structure
 
-## Installation
+```
+apps/
+  api/   # NestJS + Prisma
+  web/   # Next.js
+  docs/  # Fumadocs MDX
+packages/
+  ui/                # Shared UI components & styles
+  typescript-config/ # TS configs
+  eslint-config/     # ESLint configs
+```
 
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
+## Development workflow
 
-### Subchapter 3
+- Common scripts (root):
+  - `bun run dev` → web + api + docs
+  - `bun run dev:web+docs` → web + docs
+  - `bun run dev:web`, `bun run dev:api`, `bun run dev:docs`
+  - `bun run build` → turbo build all
+- Lint/format:
+  - `bun run lint`, `bun run format`
+- Add a new package/app: create under `packages/` or `apps/`, add to workspaces.
 
-Takopi's original sin.<br />
-Takopi's original sin.<br />
-Takopi's original sin.<br />
-Takopi's original sin.<br />
+## Architecture at a glance
 
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
-Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin. Takopi's original sin.<br />
+- Web calls API server-side; tokens live in HTTP-only cookies (see Auth doc)
+- Data fetching: server components/route handlers; opt-in caching via `revalidate`
 
+## UI and styling
+
+- Components from `@workspace/ui`
+- Tailwind setup shared; docs app transpiles UI and includes UI CSS
+- Theming via CSS variables in the UI package
+
+## Documentation
+
+- MDX lives in `apps/docs/content/docs/(root)`
+- Sidebar and ordering via `meta.json`
+- `basePath: '/docs'`; in prod, route `/docs/*` to the docs app (rewrite or separate domain)
+
+## Deployment
+
+- Railway recommended for Nestjs: Docker is written for Nestjs deployment
+- Vercel recommended for Nextjs: separate projects for web and docs
+- Use rewrites in web to proxy `/docs/*` → docs host if you want a single domain
+- Set envs in each project (web: `API_URL`; api: DB/JWT)
+
+## Troubleshooting
+
+- Build fails fetching data: set `API_URL` to a reachable host and/or make pages dynamic
 
