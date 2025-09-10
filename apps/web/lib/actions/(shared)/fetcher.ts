@@ -35,7 +35,7 @@ export async function fetcher(
 
     return res.json();
   } catch (err: any) {
-    console.error('Error in fetcher:', err.message);
+    // console.error('Error in fetcher:', err.message);
     throw err; // Optional: or return { error: err.message }
   }
 }

@@ -4,17 +4,18 @@ import { fetcher } from '@/lib/actions/(shared)/fetcher';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
 import { CommentCreateInput } from '@workspace/zod-schemas';
 import { revalidateTag } from 'next/cache';
+import { handleError } from '@/lib/actions/(shared)/handle-error';
 
-export async function getComments() {
+export async function getComments(): Promise<Comment[] | null> {
   try {
     const data = await fetch(`${getApiUrl()}/comments/`, {
       next: { tags: ['comments'] },
     });
 
     return await data.json();
-  } catch (e) {
-    // TODO: idk how to type it
-    console.log(e);
+  } catch (e: unknown) {
+    handleError(e);
+    return null;
   }
 }
 
@@ -28,8 +29,8 @@ export async function addComment(comment: CommentCreateInput) {
     revalidateTag('comments');
 
     return newComment;
-  } catch (e) {
-    // TODO: idk how to type it
-    console.log(e);
+  } catch (e: unknown) {
+    handleError(e);
+    return null;
   }
 }

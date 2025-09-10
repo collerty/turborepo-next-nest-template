@@ -5,6 +5,7 @@ import { fetcher } from '@/lib/actions/(shared)/fetcher';
 import { clearAuthTokens, getAuthTokens } from '@/lib/actions/(shared)/auth-tokens';
 import { getApiUrl } from '@/lib/actions/(shared)/api-url';
 import { Tokens, User } from '@workspace/zod-schemas';
+import { handleError } from '@/lib/actions/(shared)/handle-error';
 
 interface LoginBody {
   email: string;
@@ -37,19 +38,18 @@ export async function login(body: LoginBody): Promise<ApiResponse<Tokens>> {
 }
 
 
-export async function getProfile(): Promise<User> {
+export async function getProfile(): Promise<User | null> {
   try {
-    const data = await fetcher(`${getApiUrl()}/auth/profile`, {
+    const user = await fetcher(`${getApiUrl()}/auth/profile`, {
       method: 'GET',
       credentials: 'include',
       cache: 'no-store',
-    }) as any; // TODO: change type
+    }) as User;
 
-    return data;
-    /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
-  } catch (e) {
-    // TODO: idk how to type it
-    console.log(e);
+    return user;
+  } catch (e: unknown) {
+    handleError(e);
+    return null;
   }
 }
 
@@ -57,17 +57,6 @@ export async function logout(): Promise<void> {
   // let redirectPath: string | null = null;
 
   try {
-    // const { accessToken } = await getAuthTokens();
-    // const headers = {
-    //   'Content-Type': 'application/json',
-    //   Authorization: accessToken ? `Bearer ${accessToken.value}` : undefined,
-    // };
-    // await fetch(`${getApiUrl()}/auth/logout`, {
-    //   method: 'POST',
-    //   credentials: 'include',
-    //   ...headers,
-    // });
-    // console.log('clear auth tokens');
     await clearAuthTokens();
     // console.log('revalidate path');
     // window.location.href = '/';

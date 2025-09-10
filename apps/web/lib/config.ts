@@ -11,7 +11,7 @@ export const siteConfig = {
   },
   navItems: [
     {
-      href: '/docs/introduction',
+      href: 'https://turborepo-next-nest-template-web.vercel.app/docs/introduction',
       label: 'Docs',
     },
     {
